@@ -15,6 +15,13 @@ if (Meteor.isClient) {
             Session.set("in_progress", "FALSE");
         }
     });
+
+    Template.board.events({
+        'click .square': function (evt) {
+            console.log("Clicked square");
+        }
+    });
+
 }
 
 if (Meteor.isServer) {
