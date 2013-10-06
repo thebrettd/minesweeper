@@ -1,15 +1,20 @@
 if (Meteor.isClient) {
-  Template.hello.greeting = function () {
-    return "Welcome to minesweeper2.";
+
+  Template.main.gameStarted = function() {
+      return Session.get("in_progress") == "TRUE";
   };
 
-  Template.hello.events({
+  Template.menu.events({
     'click input' : function () {
-      // template data, if any, is available in 'this'
-      if (typeof console !== 'undefined')
-        console.log("You pressed the button");
+      Session.set("in_progress", "TRUE");
     }
   });
+
+    Template.board.events({
+        'click input' : function () {
+            Session.set("in_progress", "FALSE");
+        }
+    });
 }
 
 if (Meteor.isServer) {
