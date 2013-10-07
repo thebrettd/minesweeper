@@ -1,3 +1,4 @@
+
 if (Meteor.isClient) {
 
     Template.main.gameStarted = function () {
@@ -6,11 +7,7 @@ if (Meteor.isClient) {
 
     Template.menu.events({
         'click input': function () {
-            Session.set("inProgress", "TRUE");
-            Session.set("gameOver", "FALSE");
-            Session.set("numClicked", 0);
-            Session.set("currentBoard", newBoard());
-            Session.set("adjacentBombs", computeAdjacentBombs());
+            resetBoard();
         }
     });
 
@@ -32,6 +29,9 @@ if (Meteor.isClient) {
         'click input.cheat': function () {
             tempRevealBombs();
         },
+        'click input.reset': function () {
+            resetBoard();
+        },
         'click input.validate': function () {
             if (Session.get("numClicked") == 54){
                 window.alert("You win!");
@@ -39,7 +39,7 @@ if (Meteor.isClient) {
         },
         'click .square': function (evt) {
             if (Session.equals("gameOver","TRUE")) { //Do not allow any more clicking once a bomb has been clicked
-                window.alert("Sorry, game over. Please return to Menu.");
+                window.alert("Sorry, game over. Please return to Menu or click Reset");
             } else {
                 var board = getCurrentBoard();
                 var squareNum = evt.currentTarget.className.split(" ")[1];
@@ -159,6 +159,14 @@ if (Meteor.isClient) {
         //Change class on all square elements where board[squareNum] = b
         //wait 3 seconds
         //Change them all back
+    }
+
+    function resetBoard() {
+        Session.set("inProgress", "TRUE");
+        Session.set("gameOver", "FALSE");
+        Session.set("numClicked", 0);
+        Session.set("currentBoard", newBoard());
+        Session.set("adjacentBombs", computeAdjacentBombs());
     }
 
 }
