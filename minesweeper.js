@@ -18,7 +18,7 @@ if (Meteor.isClient) {
     Template.board.square = function (squareNum) {
         var board = getCurrentBoard();
         if (board[squareNum] == 'X')
-            return computeNumBombs(squareNum,board);
+            return Session.get("adjacentBombs")[squareNum];
         else if (board[squareNum] == 'B' && Session.equals("gameOver","TRUE"))
             return 'B';
         else
@@ -49,12 +49,13 @@ if (Meteor.isClient) {
                     Session.set("gameOver", "TRUE");
                 } else {
                     board[squareNum] = 'X'; //Mark the cell as clicked.
-                    updateBoard(board);
+
                     Session.set("numClicked", Session.get("numClicked") + 1);
-                    if (computeNumBombs(squareNum,board) == 0) {
-                        clickAllAdjacent(squareNum);
+                    if (Session.get("adjacentBombs")[squareNum] == 0) {
+                        clickAllAdjacent(squareNum,board);
                     }
                 }
+                updateBoard(board);
             }
         }
     });
@@ -140,17 +141,15 @@ if (Meteor.isClient) {
     //"Click" all cells adjacent to squareNum which have not been clicked.
     //A click is indicated by placing an "X" in that cell in the board array.
     //If a cell is touching 0 bombs, also click all of its adjacent non-clicked cells.
-    function clickAllAdjacent(squareNum) {
-        var board = getCurrentBoard();
+    function clickAllAdjacent(squareNum,board) {
         var adjacentCellsList = computeAdjacentCellsList(squareNum);
         var clicked = 0;
         for (var j = 0; j < adjacentCellsList.length; j++) {
             if(board[adjacentCellsList[j]] != 'X'){ //Do not "click" cells which have already been clicked..
                 board[adjacentCellsList[j]] = 'X';
                 Session.set("numClicked", Session.get("numClicked") + 1);
-                updateBoard(board);
-                if (computeNumBombs(adjacentCellsList[j], board) == 0){
-                    clickAllAdjacent(adjacentCellsList[j]);
+                if (Session.get("adjacentBombs")[adjacentCellsList[j]] == 0){
+                    clickAllAdjacent(adjacentCellsList[j], board);
                 }
             }
         }
