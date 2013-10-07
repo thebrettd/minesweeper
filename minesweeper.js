@@ -143,7 +143,6 @@ if (Meteor.isClient) {
     //If a cell is touching 0 bombs, also click all of its adjacent non-clicked cells.
     function clickAllAdjacent(squareNum,board) {
         var adjacentCellsList = computeAdjacentCellsList(squareNum);
-        var clicked = 0;
         for (var j = 0; j < adjacentCellsList.length; j++) {
             if(board[adjacentCellsList[j]] != 'X'){ //Do not "click" cells which have already been clicked..
                 board[adjacentCellsList[j]] = 'X';
