@@ -38,12 +38,13 @@ if (Meteor.isClient) {
             }
         },
         'click .square': function (evt) {
+            var board = getCurrentBoard();
+            var squareNum = evt.currentTarget.className.split(" ")[1];
+
             if (Session.equals("gameOver","TRUE")) { //Do not allow any more clicking once a bomb has been clicked
                 window.alert("Sorry, game over. Please return to Menu or click Reset");
-            } else {
-                var board = getCurrentBoard();
-                var squareNum = evt.currentTarget.className.split(" ")[1];
-
+            } else if (board[squareNum] != 'X') { //Do nothing if this square already clicked
+                updateBoard(board);
                 if (board[squareNum] == "B") {
                     window.alert("You clicked on a bomb, you lose :(");
                     Session.set("gameOver", "TRUE");
@@ -55,7 +56,6 @@ if (Meteor.isClient) {
                         clickAllAdjacent(squareNum,board);
                     }
                 }
-                updateBoard(board);
             }
         }
     });
