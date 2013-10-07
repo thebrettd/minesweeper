@@ -87,7 +87,7 @@ if (Meteor.isClient) {
         var adjacentBombs = [];
 
         for (var i=0;i<64;i++){
-            adjacentBombs = computeNumBombs(i, Session.get("currentBoard"));
+            adjacentBombs[i] = computeNumBombs(i, Session.get("currentBoard"));
         }
 
         return adjacentBombs;
