@@ -39,18 +39,17 @@ if (Meteor.isClient) {
         },
         'click .square': function (evt) {
             var board = getCurrentBoard();
-            var squareNum = evt.currentTarget.className.split(" ")[1];
+            var squareNum = parseInt(evt.currentTarget.className.split(" ")[1]);
 
             if (Session.equals("gameOver","TRUE")) { //Do not allow any more clicking once a bomb has been clicked
                 window.alert("Sorry, game over. Please return to Menu or click Reset");
             } else if (board[squareNum] != 'X') { //Do nothing if this square already clicked
-                updateBoard(board);
                 if (board[squareNum] == "B") {
                     window.alert("You clicked on a bomb, you lose :(");
                     Session.set("gameOver", "TRUE");
                 } else {
                     board[squareNum] = 'X'; //Mark the cell as clicked.
-
+                    updateBoard(board);
                     Session.set("numClicked", Session.get("numClicked") + 1);
                     if (Session.get("adjacentBombs")[squareNum] == 0) {
                         clickAllAdjacent(squareNum,board);
@@ -111,32 +110,42 @@ if (Meteor.isClient) {
     //Return a list of all of the cell numbers which are adjacent to i
     function computeAdjacentCellsList(i) {
         var adjacentCellsList = [];
-        if (i - 9 >= 0 && !(i % 8 == 0)) {
+        if (i - 9 >= 0 && !(isLeftmostColumn(i))) {
             adjacentCellsList.push(i - 9);
         }
         if ((i - 8 >= 0)) {
             adjacentCellsList.push(i - 8);
         }
-        if ((i - 7 >= 0) && !(((i+1) % 8) == 0)) {
+        if ((i - 7 >= 0) && !(isRightmostColumn(i))) {
             adjacentCellsList.push(i - 7);
         }
-        if ((i - 1 >= 0) && !(i % 8 == 0)) {
+        if ((i - 1 >= 0) && !(isLeftmostColumn(i))) {
             adjacentCellsList.push(i - 1);
         }
-        if ((i + 1 < 64) && !(((i+1) % 8) == 0)) {
+        if ((i + 1 < 64) && !(isRightmostColumn(i))) {
             adjacentCellsList.push(i + 1);
         }
-        if (i + 7 < 64 && !(i % 8 == 0)) {
+        if (i + 7 < 64 && !(isLeftmostColumn(i))) {
             adjacentCellsList.push(i + 7);
         }
         if (i + 8 < 64) {
             adjacentCellsList.push(i + 8);
         }
-        if (i + 9 < 64 && !(((i+1) % 8) == 0)) {
+        if (i + 9 < 64 && !(isRightmostColumn(i))) {
             adjacentCellsList.push(i + 9);
         }
+        console.log("Returning: " + adjacentCellsList + " for " + i);
         return adjacentCellsList;
     }
+
+    function isLeftmostColumn(i){
+        return (i % 8) === 0;
+    }
+
+    function isRightmostColumn(i){
+        return ((i + 1) % 8) == 0;
+    }
+
 
     //"Click" all cells adjacent to squareNum which have not been clicked.
     //A click is indicated by placing an "X" in that cell in the board array.
@@ -146,6 +155,7 @@ if (Meteor.isClient) {
         for (var j = 0; j < adjacentCellsList.length; j++) {
             if(board[adjacentCellsList[j]] != 'X'){ //Do not "click" cells which have already been clicked..
                 board[adjacentCellsList[j]] = 'X';
+                updateBoard(board);
                 Session.set("numClicked", Session.get("numClicked") + 1);
                 if (Session.get("adjacentBombs")[adjacentCellsList[j]] == 0){
                     clickAllAdjacent(adjacentCellsList[j], board);
