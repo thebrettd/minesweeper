@@ -1,4 +1,3 @@
-
 if (Meteor.isClient) {
 
     Template.main.gameStarted = function () {
@@ -22,6 +21,15 @@ if (Meteor.isClient) {
             return ' ';
     };
 
+    Template.board.squareClass = function(squareNum){
+        var board = getCurrentBoard();
+        var isBomb = board[squareNum] == 'B';
+        if (isBomb && Session.equals("cheatMode","TRUE"))
+            return 'squareCheat ' + squareNum;
+        else
+            return 'square ' + squareNum;
+    };
+
     Template.board.events({
         'click input.menu': function () {
             Session.set("inProgress", "FALSE");
@@ -35,6 +43,7 @@ if (Meteor.isClient) {
         'click input.validate': function () {
             if (Session.get("numClicked") == 54){
                 window.alert("You win!");
+                Session.set("gameOver", "TRUE");
             }
         },
         'click .square': function (evt) {
@@ -134,7 +143,6 @@ if (Meteor.isClient) {
         if (i + 9 < 64 && !(isRightmostColumn(i))) {
             adjacentCellsList.push(i + 9);
         }
-        console.log("Returning: " + adjacentCellsList + " for " + i);
         return adjacentCellsList;
     }
 
@@ -143,9 +151,8 @@ if (Meteor.isClient) {
     }
 
     function isRightmostColumn(i){
-        return ((i + 1) % 8) == 0;
+        return ((i + 1) % 8) === 0;
     }
-
 
     //"Click" all cells adjacent to squareNum which have not been clicked.
     //A click is indicated by placing an "X" in that cell in the board array.
@@ -165,10 +172,24 @@ if (Meteor.isClient) {
     }
 
     function tempRevealBombs(){
-        //Change class on all square elements where board[squareNum] = b
-        //wait 3 seconds
-        //Change them all back
+        showBombs();
+        Meteor.setTimeout(function () {
+            hideBombs();
+        },3000);
+
     }
+
+    function showBombs() {
+        window.alert("Cheaters never win.");
+        Session.set("cheatMode", "TRUE");
+        Deps.flush();
+    }
+
+    function hideBombs(){
+        Session.set("cheatMode", "FALSE");
+        Deps.flush();
+    }
+
 
     function resetBoard() {
         Session.set("inProgress", "TRUE");
@@ -176,6 +197,7 @@ if (Meteor.isClient) {
         Session.set("numClicked", 0);
         Session.set("currentBoard", newBoard());
         Session.set("adjacentBombs", computeAdjacentBombs());
+        Session.set("cheatMode", "FALSE");
     }
 
 }
