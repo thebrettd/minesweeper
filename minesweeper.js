@@ -45,7 +45,7 @@ if (Meteor.isClient) {
                 window.alert("You win!");
                 Session.set("gameOver", "TRUE");
             }else{
-                window.alert("There are still " + (54 - numClicked) + " non-bomb squares remaining!");
+                window.alert("There are still " + (54 - Session.get("numClicked")) + " non-bomb squares remaining!");
             }
         },
         'click .square': function (evt) {
