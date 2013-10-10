@@ -3,7 +3,7 @@ minesweeper
 
 Minesweeper clone implemented using Meteor javascript framework
 
-Code is deployed and running at brettminesweeper.meteor.org
+Code is deployed and running at brettminesweeper.meteor.com
 
 To install meteor and run locally:
 
