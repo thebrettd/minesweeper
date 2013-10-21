@@ -9,10 +9,14 @@
 </body>
 
 <template name="main">
-    {{#if gameStarted }}
-        {{> board }}
+    {{#if currentUser}}
+        {{#if gameStarted }}
+            {{> board }}
+        {{else}}
+            {{> menu }}
+        {{/if}}
     {{else}}
-        {{> menu }}
+        {{> login}}
     {{/if}}
 </template>
 
@@ -114,4 +118,8 @@
         <input type="button" class="menu" value="Menu"/>
         <input type="button" class="reset" value="Reset"/>
     </div>
+</template>
+
+<template name="login">
+    {{loginButtons align="left"}}
 </template>
