@@ -1,7 +1,7 @@
 minesweeper
 ===========
 
-See it running [here](brettminesweeper.meteor.com)
+See it running [here](http://brettminesweeper.meteor.com)
 
 Minesweeper clone implemented using Meteor javascript framework
 
