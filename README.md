@@ -1,6 +1,8 @@
 minesweeper
 ===========
 
+See it running at brettminesweeper.meteor.com
+
 Minesweeper clone implemented using Meteor javascript framework
 
 Code is deployed and running at brettminesweeper.meteor.com
